@@ -1,0 +1,75 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+
+import Hero from '~/components/widgets/Hero.astro';
+import Note from '~/components/widgets/Note.astro';
+import Features from '~/components/widgets/Features.astro';
+import Steps from '~/components/widgets/Steps.astro';
+import FAQs from '~/components/widgets/FAQs.astro';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+import { cmsApiClient } from '~/services/cms.service';
+import type { AWIndexPage } from '~/types/content';
+import { LANGUAGES } from '~/utils/languages';
+import Content from '~/components/widgets/Content.astro';
+import Stats from '~/components/widgets/Stats.astro';
+import Features2 from '~/components/widgets/Features2.astro';
+
+export async function getStaticPaths() {
+  const res: any[] = [];
+  for (let lang of LANGUAGES) {
+    const indexPageInLang = await cmsApiClient.indexRetrieve({
+      headers: { 'accept-language': lang },
+    });
+    res.push({
+      params: { lang },
+      props: indexPageInLang,
+    });
+  }
+  return res;
+}
+
+type Props = AWIndexPage;
+
+const { hero, feature, step, faq, cta, feature2, contents, stat, title } = Astro.props;
+
+const metadata = {
+  title: title || '',
+  ignoreTitleTemplate: true,
+};
+---
+
+<Layout metadata={metadata}>
+  <!-- Hero Widget ******************* -->
+
+  <Hero {...hero} />
+
+  <!-- Note Widget ******************* -->
+
+  <Note />
+
+  <!-- Features Widget *************** -->
+
+  <Features {...feature} />
+  <!-- Steps Widget ****************** -->
+
+  {
+    contents.map((content) => (
+      <Content {...content}>
+        <Fragment slot="bg">
+          <div class="absolute inset-0 bg-blue-50 dark:bg-transparent" />
+        </Fragment>
+      </Content>
+    ))
+  }
+
+  <Steps {...step} />
+
+  <Features2 {...feature2} />
+
+  <FAQs {...faq} />
+
+  <!-- CallToAction Widget *********** -->
+  <Stats {...stat} />
+
+  <CallToAction {...cta} />
+</Layout>

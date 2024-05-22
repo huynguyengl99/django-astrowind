@@ -1,0 +1,87 @@
+---
+import setWith from 'lodash.setwith';
+
+import { cmsApiClient } from '~/services/cms.service';
+import type { AWPost } from '~/types/content';
+import { LANGUAGES } from '~/utils/languages';
+import Layout from '~/layouts/PageLayout.astro';
+import SinglePost from '~/components/blog/SinglePost.astro';
+import ToBlogLink from '~/components/blog/ToBlogLink.astro';
+import RelatedPosts from '~/components/blog/RelatedPosts.astro';
+import { getCanonical, getPermalink } from '~/utils/permalinks';
+
+export async function getStaticPaths() {
+  const size = 10;
+  let res: any[] = [];
+  let allSlugMapping = {};
+
+  for (let lang of LANGUAGES) {
+    let page = 1;
+    let postsRes = await cmsApiClient.postsPostsList({
+      headers: { 'accept-language': lang },
+    });
+    const count = postsRes.count;
+    const maxPage = Math.ceil(count / size);
+
+    postsRes.results.forEach((postItem) => {
+      setWith(allSlugMapping, [postItem.id, lang], postItem.slug, Object);
+    });
+
+    postsRes.results.forEach((post) => {
+      res.push({
+        params: { lang, slug: post.slug },
+        props: { post },
+      });
+    });
+
+    while (page < maxPage) {
+      page += 1;
+      postsRes = await cmsApiClient.postsPostsList({
+        headers: { 'accept-language': lang },
+        queries: {
+          page,
+          size,
+        },
+      });
+      postsRes.results.forEach((postItem) => {
+        setWith(allSlugMapping, [postItem.id, lang], postItem.slug, Object);
+      });
+
+      postsRes.results.forEach((post) => {
+        res.push({
+          params: { lang, slug: post.slug },
+          props: { post },
+        });
+      });
+    }
+  }
+
+  res = res.map((item) => ({
+    ...item,
+    props: {
+      post: item.props.post,
+      slugMapping: allSlugMapping[item.props.post.id],
+    },
+  }));
+  return res;
+}
+type Props = {
+  post: AWPost;
+  slugMapping: object;
+};
+
+const { post, slugMapping } = Astro.props;
+
+const url = getCanonical(getPermalink(post.slug, 'post'));
+
+const metadata = {
+  title: post.title || '',
+};
+---
+
+<Layout metadata={metadata} slugMapping={slugMapping}>
+  <!-- <article set:html={content} /> -->
+  <SinglePost post={{ ...post }} url={url} />
+  <ToBlogLink />
+  <RelatedPosts relatedPosts={post.relatedPosts} />
+</Layout>

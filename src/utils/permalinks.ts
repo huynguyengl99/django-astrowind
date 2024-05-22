@@ -4,8 +4,8 @@ import { SITE, APP_BLOG } from 'astrowind:config';
 
 import { trim } from '~/utils/utils';
 
-export const trimSlash = (s: string) => trim(trim(s, '/'));
-const createPath = (...params: string[]) => {
+export const trimSlash = (s: string | null | undefined) => trim(trim(s || '', '/'));
+const createPath = (...params: (string | null)[]) => {
   const paths = params
     .map((el) => trimSlash(el))
     .filter((el) => !!el)
@@ -38,8 +38,14 @@ export const getCanonical = (path = ''): string | URL => {
   return url;
 };
 
+type PermalinkType = 'page' | 'category' | 'tag' | 'post' | 'blog';
+
 /** */
-export const getPermalink = (slug = '', type = 'page'): string => {
+export const getPermalink = (
+  slug: string | null | undefined = '',
+  type: PermalinkType | string = 'page',
+  lang = ''
+): string => {
   let permalink: string;
 
   switch (type) {
@@ -55,10 +61,17 @@ export const getPermalink = (slug = '', type = 'page'): string => {
       permalink = createPath(trimSlash(slug));
       break;
 
+    case 'blog':
+      permalink = createPath(BLOG_BASE, trimSlash(slug));
+      break;
+
     case 'page':
     default:
       permalink = createPath(slug);
       break;
+  }
+  if (lang) {
+    permalink = createPath(lang, permalink);
   }
 
   return definitivePermalink(permalink);
@@ -68,7 +81,7 @@ export const getPermalink = (slug = '', type = 'page'): string => {
 export const getHomePermalink = (): string => getPermalink('/');
 
 /** */
-export const getBlogPermalink = (): string => getPermalink(BLOG_BASE);
+export const getBlogPermalink = (lang = ''): string => getPermalink(BLOG_BASE, '', lang);
 
 /** */
 export const getAsset = (path: string): string =>

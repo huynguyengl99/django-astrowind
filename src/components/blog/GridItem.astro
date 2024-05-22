@@ -1,26 +1,27 @@
 ---
 import { APP_BLOG } from 'astrowind:config';
-import type { Post } from '~/types';
 
 import Image from '~/components/common/Image.astro';
+import type { RelatedPost } from '~/types/content';
 
 import { findImage } from '~/utils/images';
-import { getPermalink } from '~/utils/permalinks';
-
+import { BLOG_BASE, getPermalink } from '~/utils/permalinks';
 
 export interface Props {
-  post: Post;
+  post: RelatedPost;
 }
 
+const { lang } = Astro.params;
+
 const { post } = Astro.props;
-const image = (await findImage(post.image));
+const image = await findImage(post.image?.src);
 ---
 
 <article class="mb-6 transition">
   <div class="relative md:h-64 bg-gray-400 dark:bg-slate-700 rounded shadow-lg mb-6">
     {
       image && (
-        <a href={getPermalink(post.permalink, 'post')}>
+        <a href={getPermalink(post.slug, BLOG_BASE, lang)}>
           <Image
             src={image}
             class="w-full md:h-full rounded shadow-lg bg-gray-400 dark:bg-slate-700"
@@ -43,7 +44,7 @@ const image = (await findImage(post.image));
         post.title
       ) : (
         <a
-          href={getPermalink(post.permalink, 'post')}
+          href={getPermalink(post.slug, BLOG_BASE, lang)}
           class="hover:text-primary dark:hover:text-blue-700  transition ease-in duration-200"
         >
           {post.title}

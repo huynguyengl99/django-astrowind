@@ -1,0 +1,7 @@
+import { contentSchemas } from "~/schemas/content"
+import { z } from "zod";
+
+{{#each schemas}}
+export type {{@key}} = z.infer<typeof contentSchemas.{{@key}}>;
+
+{{/each}}

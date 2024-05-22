@@ -1,28 +1,29 @@
 ---
-import { APP_BLOG } from "astrowind:config";
+import { APP_BLOG } from 'astrowind:config';
 
-import { fetchPosts, getRelatedPosts } from "~/utils/blog";
-import BlogHighlightedPosts from "../widgets/BlogHighlightedPosts.astro";
-import type { Post } from "~/types";
-import { getBlogPermalink } from "~/utils/permalinks";
+import BlogHighlightedPosts from '../widgets/BlogHighlightedPosts.astro';
+import { getBlogPermalink } from '~/utils/permalinks';
+import type { RelatedPost } from '~/types/content';
+import { getPostPage } from '~/utils/blog';
 
 export interface Props {
-  post: Post;
+  relatedPosts: RelatedPost[];
 }
 
-const { post } = Astro.props;
-const fetchedPosts = await fetchPosts();
-const relatedPosts = post.tags ? getRelatedPosts(fetchedPosts, post.slug, post.tags) : [];
+const { relatedPosts } = Astro.props;
+const { lang } = Astro.params;
+
+const postPageData = await getPostPage(lang);
 ---
 
 {
   APP_BLOG.isRelatedPostsEnabled ? (
     <BlogHighlightedPosts
-      classes={{ container: "pt-0 lg:pt-0 md:pt-0" }}
-      title="Related Posts"
-      linkText="View All Posts"
-      linkUrl={getBlogPermalink()}
-      postIds={relatedPosts.map((post) => post.id)}
+      classes={{ container: 'pt-0 lg:pt-0 md:pt-0' }}
+      title={postPageData.relatedPostsText || ''}
+      linkText={postPageData.viewAllPostsText || ''}
+      linkUrl={getBlogPermalink(lang)}
+      posts={relatedPosts}
     />
   ) : null
 }

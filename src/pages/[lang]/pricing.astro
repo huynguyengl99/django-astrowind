@@ -1,0 +1,57 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import HeroText from '~/components/widgets/HeroText.astro';
+import Prices from '~/components/widgets/Pricing.astro';
+import FAQs from '~/components/widgets/FAQs.astro';
+import Features3 from '~/components/widgets/Features3.astro';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+import { cmsApiClient } from '~/services/cms.service';
+import { LANGUAGES } from '~/utils/languages';
+import type { AWPricingPage } from '~/types/content';
+import Steps from '~/components/widgets/Steps.astro';
+
+export async function getStaticPaths() {
+  const res: any[] = [];
+  for (let lang of LANGUAGES) {
+    const aboutPageInLang = await cmsApiClient.pricingRetrieve({
+      headers: { 'accept-language': lang },
+    });
+    res.push({
+      params: { lang },
+      props: aboutPageInLang,
+    });
+  }
+  return res;
+}
+
+type Props = AWPricingPage;
+
+const { title, heroText, prices, feature3, faq, cta, step } = Astro.props;
+
+const metadata = {
+  title: title || '',
+};
+---
+
+<Layout metadata={metadata}>
+  <!-- HeroText Widget ******************* -->
+
+  <HeroText {...heroText} />
+
+  <!-- Pricing Widget ******************* -->
+
+  <Prices {...prices} />
+
+  <!-- Features3 Widget ************** -->
+
+  <Features3 {...feature3} classes={{ container: 'max-w-5xl' }} />
+
+  <Steps {...step} />
+  <!-- FAQs Widget ******************* -->
+
+  <FAQs {...faq} />
+
+  <!-- CallToAction Widget *********** -->
+
+  <CallToAction {...cta} />
+</Layout>

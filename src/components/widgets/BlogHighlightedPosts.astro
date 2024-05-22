@@ -1,40 +1,38 @@
 ---
-import { APP_BLOG } from "astrowind:config";
+import { APP_BLOG } from 'astrowind:config';
 
-import Grid from "~/components/blog/Grid.astro";
+import Grid from '~/components/blog/Grid.astro';
 
-import { getBlogPermalink } from "~/utils/permalinks";
-import { findPostsByIds } from "~/utils/blog";
-import WidgetWrapper from "~/components/ui/WidgetWrapper.astro";
-import type { Widget } from "~/types";
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import type { Widget } from '~/types';
+import type { RelatedPost } from '~/types/content';
 
 export interface Props extends Widget {
   title?: string;
   linkText?: string;
   linkUrl?: string | URL;
   information?: string;
-  postIds: string[];
+  posts: RelatedPost[];
 }
 
-const {
-  title = await Astro.slots.render("title"),
-  linkText = "View all posts",
-  linkUrl = getBlogPermalink(),
-  information = await Astro.slots.render("information"),
-  postIds = [],
 
-  id,
+const {
+  title = await Astro.slots.render('title'),
+  linkText,
+  linkUrl,
+  information = await Astro.slots.render('information'),
+  posts = [],
+
+  htmlId,
   isDark = false,
   classes = {},
-  bg = await Astro.slots.render("bg"),
+  bg = await Astro.slots.render('bg'),
 } = Astro.props;
-
-const posts = APP_BLOG.isEnabled ? await findPostsByIds(postIds) : [];
 ---
 
 {
   APP_BLOG.isEnabled ? (
-    <WidgetWrapper id={id} isDark={isDark} containerClass={classes?.container as string} bg={bg}>
+    <WidgetWrapper htmlId={htmlId} isDark={isDark} containerClass={classes?.container as string} bg={bg}>
       <div class="flex flex-col lg:justify-between lg:flex-row mb-8">
         {title && (
           <div class="md:max-w-sm">

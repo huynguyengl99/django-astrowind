@@ -1,0 +1,43 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import HeroText from '~/components/widgets/HeroText.astro';
+import ContactUs from '~/components/widgets/Contact.astro';
+import Features2 from '~/components/widgets/Features2.astro';
+import { cmsApiClient } from '~/services/cms.service';
+import type { AWContactPage } from '~/types/content';
+import { LANGUAGES } from '~/utils/languages';
+
+export async function getStaticPaths() {
+  const res: any[] = [];
+  for (let lang of LANGUAGES) {
+    const aboutPageInLang = await cmsApiClient.contactRetrieve({
+      headers: { 'accept-language': lang },
+    });
+    res.push({
+      params: { lang },
+      props: aboutPageInLang,
+    });
+  }
+  return res;
+}
+
+type Props = AWContactPage;
+
+const { title, heroText, contactUs, feature2 } = Astro.props;
+
+const metadata = {
+  title: title || '',
+};
+---
+
+<Layout metadata={metadata}>
+  <!-- HeroText Widget ******************* -->
+
+  <HeroText {...heroText} />
+
+  <ContactUs {...contactUs} />
+
+  <!-- Features2 Widget ************** -->
+
+  <Features2 {...feature2} />
+</Layout>

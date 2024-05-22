@@ -16,7 +16,7 @@ const {
   isBeforeContent,
   isAfterContent,
 
-  id,
+  htmlId,
   isDark = false,
   classes = {},
   bg = await Astro.slots.render('bg'),
@@ -24,7 +24,7 @@ const {
 ---
 
 <WidgetWrapper
-  id={id}
+  htmlId={htmlId}
   isDark={isDark}
   containerClass={`${isBeforeContent ? 'md:pb-8 lg:pb-12' : ''} ${isAfterContent ? 'pt-0 md:pt-0 lg:pt-0' : ''} ${
     classes?.container ?? ''

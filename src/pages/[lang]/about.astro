@@ -1,0 +1,45 @@
+---
+import Features2 from '~/components/widgets/Features2.astro';
+import Features3 from '~/components/widgets/Features3.astro';
+import Hero from '~/components/widgets/Hero.astro';
+import Stats from '~/components/widgets/Stats.astro';
+import Steps2 from '~/components/widgets/Steps2.astro';
+import Layout from '~/layouts/PageLayout.astro';
+import { cmsApiClient } from '~/services/cms.service';
+import type { AWAboutPage } from '~/types/content';
+import { LANGUAGES } from '~/utils/languages';
+
+export async function getStaticPaths() {
+  const res: any[] = [];
+  for (let lang of LANGUAGES) {
+    const aboutPageInLang = await cmsApiClient.aboutRetrieve({
+      headers: { 'accept-language': lang },
+    });
+    res.push({
+      params: { lang },
+      props: aboutPageInLang,
+    });
+  }
+  return res;
+}
+
+type Props = AWAboutPage;
+
+const { title, hero, step2s, stat, feature3s, feature2s } = Astro.props;
+
+const metadata = {
+  title: title || '',
+};
+---
+
+<Layout metadata={metadata}>
+  <Hero {...hero} />
+
+  <Stats {...stat} />
+
+  {feature3s.map((feature3) => <Features3 {...feature3} />)}
+
+  {step2s.map((step2) => <Steps2 {...step2} />)}
+
+  {feature2s.map((feature3) => <Features2 {...feature3} />)}
+</Layout>

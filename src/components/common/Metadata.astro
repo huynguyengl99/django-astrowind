@@ -4,15 +4,23 @@ import { AstroSeo } from '@astrolib/seo';
 
 import type { Props as AstroSeoProps } from '@astrolib/seo';
 
-import { SITE, METADATA, I18N } from 'astrowind:config';
+import { SITE } from 'astrowind:config';
 import type { MetaData } from '~/types';
 import { getCanonical } from '~/utils/permalinks';
 
 import { adaptOpenGraphImages } from '~/utils/images';
+import { getSiteData } from '~/utils/site';
 
 export interface Props extends MetaData {
   dontUseTitleTemplate?: boolean;
+  slugMapping?: object;
 }
+
+const { lang } = Astro.params;
+
+const siteData = await getSiteData(lang);
+
+const metadata = siteData.defaultMetadata;
 
 const {
   title,
@@ -22,6 +30,7 @@ const {
   description,
   openGraph = {},
   twitter = {},
+  slugMapping,
 } = Astro.props;
 
 const seoProps: AstroSeoProps = merge(
@@ -36,7 +45,7 @@ const seoProps: AstroSeoProps = merge(
       url: canonical,
       site_name: SITE?.name,
       images: [],
-      locale: I18N?.language || 'en',
+      locale: lang || 'en',
       type: 'website',
     },
     twitter: {
@@ -44,13 +53,13 @@ const seoProps: AstroSeoProps = merge(
     },
   },
   {
-    title: METADATA?.title?.default,
-    titleTemplate: METADATA?.title?.template,
-    noindex: typeof METADATA?.robots?.index !== 'undefined' ? !METADATA.robots.index : undefined,
-    nofollow: typeof METADATA?.robots?.follow !== 'undefined' ? !METADATA.robots.follow : undefined,
-    description: METADATA?.description,
-    openGraph: METADATA?.openGraph,
-    twitter: METADATA?.twitter,
+    title: metadata.title,
+    titleTemplate: metadata.titleTemplate,
+    noindex: typeof metadata?.robots?.index !== 'undefined' ? !metadata.robots.index : undefined,
+    nofollow: typeof metadata?.robots?.follow !== 'undefined' ? !metadata.robots.follow : undefined,
+    description: metadata?.description,
+    openGraph: metadata?.openGraph,
+    twitter: metadata?.twitter,
   },
   {
     title: title,
@@ -65,4 +74,7 @@ const seoProps: AstroSeoProps = merge(
 );
 ---
 
-<AstroSeo {...{ ...seoProps, openGraph: await adaptOpenGraphImages(seoProps?.openGraph, Astro.site) }} />
+<AstroSeo
+  {...{ ...seoProps, openGraph: await adaptOpenGraphImages(seoProps?.openGraph, Astro.site) }}
+  slugMapping={slugMapping}
+/>

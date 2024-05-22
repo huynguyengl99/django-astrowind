@@ -9,6 +9,7 @@ type Layout = 'fixed' | 'constrained' | 'fullWidth' | 'cover' | 'responsive' | '
 export interface AttributesProps extends HTMLAttributes<'img'> {}
 
 export interface ImageProps extends Omit<HTMLAttributes<'img'>, 'src'> {
+  id?: string;
   src?: string | ImageMetadata | null;
   width?: string | number | null;
   height?: string | number | null;
@@ -302,8 +303,13 @@ export async function getImagesOptimized(
     .map(({ src, width }) => `${src} ${width}w`)
     .join(', ');
 
+  let imageSrc = typeof image === 'string' ? image : image.src;
+  if (!srcset) {
+    imageSrc = (await getImage({ src: imageSrc, width: width, height: height })).src;
+  }
+
   return {
-    src: typeof image === 'string' ? image : image.src,
+    src: imageSrc,
     attributes: {
       width: width,
       height: height,

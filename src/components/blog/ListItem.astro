@@ -4,21 +4,20 @@ import { Icon } from 'astro-icon/components';
 import Image from '~/components/common/Image.astro';
 import PostTags from '~/components/blog/Tags.astro';
 
-import { APP_BLOG } from 'astrowind:config';
-import type { Post } from '~/types';
-
-import { getPermalink } from '~/utils/permalinks';
+import { BLOG_BASE, getPermalink } from '~/utils/permalinks';
 import { findImage } from '~/utils/images';
-import { getFormattedDate } from '~/utils/utils';
+import { getFormattedDateString } from '~/utils/utils';
+import type { AWPost } from '~/types/content';
 
 export interface Props {
-  post: Post;
+  post: AWPost;
 }
 
+const { lang } = Astro.params;
 const { post } = Astro.props;
-const image = (await findImage(post.image)) as ImageMetadata | undefined;
+const image = (await findImage(post.image?.src)) as ImageMetadata | undefined;
 
-const link = APP_BLOG?.post?.isEnabled ? getPermalink(post.permalink, 'post') : '';
+const link = getPermalink(post.slug, BLOG_BASE, lang);
 ---
 
 <article class={`max-w-md mx-auto md:max-w-none grid gap-6 md:gap-8 ${image ? 'md:grid-cols-2' : ''}`}>
@@ -48,29 +47,29 @@ const link = APP_BLOG?.post?.isEnabled ? getPermalink(post.permalink, 'post') : 
       <div class="mb-1">
         <span class="text-sm">
           <Icon name="tabler:clock" class="w-3.5 h-3.5 inline-block -mt-0.5 dark:text-gray-400" />
-          <time datetime={String(post.publishDate)} class="inline-block">{getFormattedDate(post.publishDate)}</time>
+          <time datetime={String(post.publishDate)} class="inline-block"
+            >{getFormattedDateString(post.publishDate || '', lang)}</time
+          >
           {
             post.author && (
               <>
                 {' '}
-                ·{' '}
-                <Icon name="tabler:user" class="w-3.5 h-3.5 inline-block -mt-0.5 dark:text-gray-400" />
+                · <Icon name="tabler:user" class="w-3.5 h-3.5 inline-block -mt-0.5 dark:text-gray-400" />
                 <span>{post.author.replaceAll('-', ' ')}</span>
               </>
             )
           }
           {
-            post.category && (
+            post.category?.slug && (
               <>
                 {' '}
                 ·{' '}
-                <a class="capitalize hover:underline" href={getPermalink(post.category, 'category')}>
-                  {post.category.replaceAll('-', ' ')}
+                <a class="capitalize hover:underline" href={getPermalink(post.category.slug, 'category', lang)}>
+                  {post.category.title}
                 </a>
               </>
             )
           }
-          
         </span>
       </div>
       <h2 class="text-xl sm:text-2xl font-bold leading-tight mb-2 font-heading dark:text-slate-300">

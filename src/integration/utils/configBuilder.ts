@@ -5,7 +5,6 @@ import type { MetaData } from '~/types';
 type Config = {
   site?: SiteConfig;
   metadata?: MetaDataConfig;
-  i18n?: I18NConfig;
   apps?: {
     blog?: AppBlogConfig;
   };
@@ -17,7 +16,7 @@ export interface SiteConfig {
   name: string;
   site?: string;
   base?: string;
-  trailingSlash?: boolean;
+  trailingSlash?: string;
   googleSiteVerificationId?: string;
 }
 export interface MetaDataConfig extends Omit<MetaData, 'title'> {
@@ -26,11 +25,7 @@ export interface MetaDataConfig extends Omit<MetaData, 'title'> {
     template: string;
   };
 }
-export interface I18NConfig {
-  language: string;
-  textDirection: string;
-  dateFormatter?: Intl.DateTimeFormat;
-}
+
 export interface AppBlogConfig {
   isEnabled: boolean;
   postsPerPage: number;
@@ -95,43 +90,11 @@ const getSite = (config: Config) => {
   return merge({}, _default, config?.site ?? {}) as SiteConfig;
 };
 
-const getMetadata = (config: Config) => {
-  const siteConfig = getSite(config);
-
-  const _default = {
-    title: {
-      default: siteConfig?.name || DEFAULT_SITE_NAME,
-      template: '%s',
-    },
-    description: '',
-    robots: {
-      index: false,
-      follow: false,
-    },
-    openGraph: {
-      type: 'website',
-    },
-  };
-
-  return merge({}, _default, config?.metadata ?? {}) as MetaDataConfig;
-};
-
-const getI18N = (config: Config) => {
-  const _default = {
-    language: 'en',
-    textDirection: 'ltr',
-  };
-
-  const value = merge({}, _default, config?.i18n ?? {});
-
-  return value as I18NConfig;
-};
-
 const getAppBlog = (config: Config) => {
   const _default = {
     isEnabled: false,
     postsPerPage: 6,
-    isRelatedPostsEnabled: false,
+    isRelatedPostsEnabled: true,
     relatedPostsCount: 4,
     post: {
       isEnabled: true,
@@ -151,7 +114,7 @@ const getAppBlog = (config: Config) => {
     },
     category: {
       isEnabled: true,
-      pathname: 'category',
+      pathname: '/blog/category',
       robots: {
         index: true,
         follow: true,
@@ -159,7 +122,7 @@ const getAppBlog = (config: Config) => {
     },
     tag: {
       isEnabled: true,
-      pathname: 'tag',
+      pathname: '/blog/tag',
       robots: {
         index: false,
         follow: true,
@@ -220,8 +183,6 @@ const getAnalytics = (config: Config) => {
 
 export default (config: Config) => ({
   SITE: getSite(config),
-  I18N: getI18N(config),
-  METADATA: getMetadata(config),
   APP_BLOG: getAppBlog(config),
   UI: getUI(config),
   ANALYTICS: getAnalytics(config),

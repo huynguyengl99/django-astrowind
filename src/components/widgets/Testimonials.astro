@@ -5,7 +5,6 @@ import Button from '~/components/ui/Button.astro';
 import Image from '~/components/common/Image.astro';
 import type { Testimonials as Props } from '~/types';
 
-
 const {
   title = '',
   subtitle = '',
@@ -13,14 +12,14 @@ const {
   testimonials = [],
   callToAction,
 
-  id,
+  htmlId,
   isDark = false,
   classes = {},
   bg = await Astro.slots.render('bg'),
 } = Astro.props;
 ---
 
-<WidgetWrapper id={id} isDark={isDark} containerClass={`max-w-6xl mx-auto ${classes?.container ?? ''}`} bg={bg}>
+<WidgetWrapper htmlId={htmlId} isDark={isDark} containerClass={`max-w-6xl mx-auto ${classes?.container ?? ''}`} bg={bg}>
   <Headline title={title} subtitle={subtitle} tagline={tagline} />
 
   <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -1,4 +1,5 @@
 import { z, defineCollection } from 'astro:content';
+import { contentSchemas } from '~/schemas/content';
 
 const metadataDefinition = () =>
   z
@@ -65,4 +66,5 @@ const postCollection = defineCollection({
 
 export const collections = {
   post: postCollection,
+  indexPage: defineCollection({ schema: contentSchemas.AWIndexPage }),
 };

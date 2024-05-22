@@ -3,29 +3,34 @@ import Layout from '~/layouts/Layout.astro';
 import Header from '~/components/widgets/Header.astro';
 import Footer from '~/components/widgets/Footer.astro';
 import Announcement from '~/components/widgets/Announcement.astro';
-
-import { headerData, footerData } from '~/navigation';
+import { getLangFromUrl } from '~/utils/i18n';
 
 import type { MetaData } from '~/types';
+import { getSiteData } from '~/utils/site';
 
 export interface Props {
   metadata?: MetaData;
+  slugMapping?: object;
 }
 
-const { metadata } = Astro.props;
+const { metadata, slugMapping } = Astro.props;
+
+const lang = getLangFromUrl(Astro.url);
+const siteData = await getSiteData(lang);
+const { header, footer } = siteData;
 ---
 
-<Layout metadata={metadata}>
+<Layout metadata={metadata} slugMapping={slugMapping}>
   <slot name="announcement">
     <Announcement />
   </slot>
   <slot name="header">
-    <Header {...headerData} isSticky showRssFeed showToggleTheme />
+    <Header {...header} isSticky showRssFeed showToggleTheme slugMapping={slugMapping} />
   </slot>
   <main>
     <slot />
   </main>
   <slot name="footer">
-    <Footer {...footerData} />
+    <Footer {...footer} />
   </slot>
 </Layout>

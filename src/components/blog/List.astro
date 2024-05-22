@@ -1,9 +1,10 @@
 ---
 import Item from '~/components/blog/ListItem.astro';
-import type { Post } from '~/types';
+import type { AWPost } from '~/types/content';
 
 export interface Props {
-  posts: Array<Post>;
+  posts: Array<AWPost>;
+  slugMapping?: object;
 }
 
 const { posts } = Astro.props;
