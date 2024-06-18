@@ -1,6 +1,6 @@
 {
-  "name": "@onwidget/astrowind",
-  "description": "AstroWind: A free template using Astro 4.0 and Tailwind CSS. Astro starter theme.",
+  "name": "django-astrowind",
+  "description": "Django-astrowind: a multilingual landing page template with django-headless-cms backend support.",
   "version": "1.0.0-beta.22",
   "private": true,
   "scripts": {
@@ -11,10 +11,10 @@
     "astro": "astro",
     "format": "prettier -w .",
     "lint:eslint": "eslint . --ext .js,.ts,.astro",
+    "sync:schema": "openapi-zod-client http://0.0.0.0:8000/api/cms-schema/ -t templates/schemas.hbs -o src/schemas/content.ts && prettier -w src/schemas/content.ts",
+    "sync:type": "openapi-zod-client http://0.0.0.0:8000/api/cms-schema/ -t templates/types.hbs -o src/types/content.ts",
     "sync:content": "vite-node scripts/sync.ts",
-    "gen:schema": "openapi-zod-client http://0.0.0.0:8000/api/cms-schema/ -t templates/schemas.hbs -o src/schemas/content.ts && prettier -w src/schemas/content.ts",
-    "gen:type": "openapi-zod-client http://0.0.0.0:8000/api/cms-schema/ -t templates/types.hbs -o src/types/content.ts",
-    "gen:all": "npm run gen:schema && npm run gen:type"
+    "sync:all": "npm run sync:schema && npm run sync:type && npm run sync:content"
   },
   "dependencies": {
     "@astrojs/react": "^3.1.1",

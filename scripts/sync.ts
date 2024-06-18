@@ -88,7 +88,7 @@ const fetchByLang = async (fetchFn, { pagination = false, lang, queries = {} }) 
   while (page > 0) {
     const data: PaginationResults = await fetchFn({
       headers: { 'accept-language': lang },
-      queries: { page, size },
+      queries: { ...queries, page, size },
     });
 
     results.push(...data.results);
@@ -104,6 +104,7 @@ const removeDeletedItems = (contentAutoFolder: string, ids: number[]) => {
     ids.forEach((id) => {
       const filePath = path.join(contentLangDir, `${id}.json`);
       try {
+        debug && console.log(`\nRemoving file ${filePath}`);
         fs.unlinkSync(filePath);
       } catch (error) {
         debug && console.log(`\nError while deleting ${filePath}: ${error}`);

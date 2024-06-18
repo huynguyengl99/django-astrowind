@@ -1,6 +1,7 @@
 import isEmpty from 'lodash/isEmpty';
 import type { LanguageAlternate } from '~/types';
 
+// Update your default language target
 export const DEFAULT_LANG = 'en';
 
 // Uncomment the below to choose your desired languages

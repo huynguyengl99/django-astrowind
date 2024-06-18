@@ -5,6 +5,7 @@ Fork from [Astrowind](https://github.com/onwidget/astrowind)
 **Django AstroWind** is a free and open-source template to make your website using **[Astro 4.0](https://astro.build/) + [Tailwind CSS](https://tailwindcss.com/)** + [Django headless CMS](https://github.com/huynguyengl99/django-headless-cms). Ready to start a new project and designed taking into account web best practices.
 
 Everything of Astrowind plus:
+
 - ✅ **Multi language** supports.
 - ✅ **Switch language** supports.
 - ✅ **Django headless CMS** integration.
@@ -16,6 +17,7 @@ Everything of Astrowind plus:
     - [Commands](#commands)
     - [Configuration](#configuration)
     - [Deploy](#deploy)
+      - [Predeploy](#predeploy)
       - [Deploy to production (manual)](#deploy-to-production-manual)
       - [Deploy to Netlify](#deploy-to-netlify)
       - [Deploy to Vercel](#deploy-to-vercel)
@@ -27,16 +29,31 @@ Everything of Astrowind plus:
 </details>
 
 <br>
+
 ## Getting Started
 
 - If you haven't launched the `Django-headless-cms` backend yet, please refer to the [Introduction](https://django-headless-cms.readthedocs.io/en/latest/introduction.html) and follow the tutorials.
 
-- Create a `.env` file from the [.env.TEMPLATE](.env.TEMPLATE) file, then input your created CMS API key from your backend.
+- Create a `.env` file from the [.env.TEMPLATE](.env.TEMPLATE) file, **then input your created CMS API key from your backend to VITE_CMS_API_KEY.**
+
+> **_NOTE:_** VITE_CMS_API_KEY is required to fetch content, don't forget to get that one from backend.
 
 - Install the required packages:
 
 ```bash
 npm install
+```
+
+- Run the following command to sync api schema (located at [src/schemas/](./src/schemas/content.ts)), schema type (located at [src/types/](./src/types/content.ts)) and the content (located at [src/contents/auto-\*](./src/content/)):
+
+```bash
+npm run sync:all
+```
+
+- If you want to sync content only, run this command:
+
+```bash
+npm run sync:content
 ```
 
 - Run the following command to start the server:
@@ -49,15 +66,19 @@ npm run dev
 
 All commands are run from the root of the project, from a terminal:
 
-| Command               | Action                                             |
-| :-------------------- | :------------------------------------------------- |
-| `npm install`         | Installs dependencies                              |
-| `npm run dev`         | Starts local dev server at `localhost:3000`        |
-| `npm run build`       | Build your production site to `./dist/`            |
-| `npm run preview`     | Preview your build locally, before deploying       |
-| `npm run format`      | Format codes with Prettier                         |
-| `npm run lint:eslint` | Run Eslint                                         |
-| `npm run astro ...`   | Run CLI commands like `astro add`, `astro preview` |
+| Command                | Action                                             |
+| :--------------------- | :------------------------------------------------- |
+| `npm install`          | Installs dependencies                              |
+| `npm run dev`          | Starts local dev server at `localhost:3000`        |
+| `npm run build`        | Build your production site to `./dist/`            |
+| `npm run sync:content` | Sync your content from backend API (cache)         |
+| `npm run sync:schema`  | Sync your schema from backend                      |
+| `npm run sync:type`    | Sync your type with backend API                    |
+| `npm run sync:all`     | Sync schema, type & content from backend API       |
+| `npm run preview`      | Preview your build locally, before deploying       |
+| `npm run format`       | Format codes with Prettier                         |
+| `npm run lint:eslint`  | Run Eslint                                         |
+| `npm run astro ...`    | Run CLI commands like `astro add`, `astro preview` |
 
 <br>
 
@@ -70,7 +91,7 @@ site:
   name: 'Example'
   site: 'https://example.com'
   base: '/' # Change this if you need to deploy to Github Pages, for example
-  trailingSlash: false # Generate permalinks with or without "/" at the end
+  trailingSlash: ignore
 
   googleSiteVerificationId: false # Or some value,
 
@@ -140,21 +161,51 @@ ui:
         accent: rgb(109 40 217)
 ```
 
+Languages settings file located at [src/utils/languages.ts](./src/utils/languages.ts). Update your
+`DEFAULT_LANG` and `LANGUAGE_MAP` to your desired target languages:
+
+```javascript
+// Update your default language target
+export const DEFAULT_LANG = 'en';
+
+// Uncomment the below to choose your desired languages
+
+export const LANGUAGE_MAP = {
+  en: 'English',
+  // af: 'Afrikaans',
+  ...
+}
+```
+
 <br>
 
 ### Deploy
 
+#### Predeploy
+
+> **_NOTE:_** Make sure you have deployed your `Django-headless-cms` backend. Then, create a **CMS API key** and save it for your deployment. Next, update your backend server URL in the [Production settings](./src/settings/production.settings.ts).
+
 #### Deploy to production (manual)
 
-You can create an optimized production build with:
+- Update your [.env](.env) file (or export the environment variables):
 
-```shell
-npm run build
+```text
+VITE_CMS_API_KEY=your-production-key
 ```
 
-Now, your website is ready to be deployed. All generated files are located at
-`dist` folder, which you can deploy the folder to any hosting service you
-prefer.
+-You can create an optimized production build with:
+
+```shell
+VITE_APP_ENV=production npm run build
+```
+
+- Now, your website is ready to be deployed. All generated files are located at
+  `dist` folder, which you can deploy the folder to any hosting service you
+  prefer.
+
+> **_NOTE:_** Deployment to Netlify and Vercel has not yet been updated to include the ability
+to fetch content and cache it. If you have knowledge about this, please feel free to contribute. Thank you!
+
 
 #### Deploy to Netlify
 
