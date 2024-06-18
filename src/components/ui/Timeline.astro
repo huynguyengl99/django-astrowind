@@ -21,7 +21,7 @@ const {
 ---
 
 {
-  items && items.length && (
+items && !!items.length && (
     <div class={containerClass}>
       {items.map(({ title, description, icon, classes: itemClasses = {} }, index = 0) => (
         <div class={twMerge('flex', panelClass, itemClasses?.panel)}>

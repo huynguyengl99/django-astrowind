@@ -18,10 +18,9 @@ import { getLangFromUrl } from '~/utils/i18n';
 
 export interface Props {
   metadata?: MetaDataType;
-  slugMapping?: object;
 }
 
-const { metadata = {}, slugMapping } = Astro.props;
+const { metadata = {} } = Astro.props;
 
 const lang = getLangFromUrl(Astro.url);
 const info = new Intl.Locale(lang);
@@ -34,7 +33,7 @@ const info = new Intl.Locale(lang);
     <Favicons />
     <CustomStyles />
     <ApplyColorMode />
-    <Metadata {...metadata} slugMapping={slugMapping} />
+    <Metadata {...metadata} />
     <SiteVerification />
     <Analytics />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" />

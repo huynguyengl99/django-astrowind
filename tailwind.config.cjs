@@ -10,7 +10,7 @@ module.exports = {
         accent: 'var(--aw-color-accent)',
         default: 'var(--aw-color-text-default)',
         muted: 'var(--aw-color-text-muted)',
-        hightlight: '#f3f3f3',
+        highlight: '#23241f',
       },
       fontFamily: {
         sans: ['var(--aw-font-sans, ui-sans-serif)', ...defaultTheme.fontFamily.sans],

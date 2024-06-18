@@ -1,25 +1,23 @@
 ---
+import { getCollection } from 'astro:content';
 import Features2 from '~/components/widgets/Features2.astro';
 import Features3 from '~/components/widgets/Features3.astro';
 import Hero from '~/components/widgets/Hero.astro';
 import Stats from '~/components/widgets/Stats.astro';
 import Steps2 from '~/components/widgets/Steps2.astro';
 import Layout from '~/layouts/PageLayout.astro';
-import { cmsApiClient } from '~/services/cms.service';
 import type { AWAboutPage } from '~/types/content';
-import { LANGUAGES } from '~/utils/languages';
 
 export async function getStaticPaths() {
-  const res: any[] = [];
-  for (let lang of LANGUAGES) {
-    const aboutPageInLang = await cmsApiClient.aboutRetrieve({
-      headers: { 'accept-language': lang },
-    });
-    res.push({
+  const aboutPages = await getCollection('auto-aboutPage');
+  const res = aboutPages.map((page) => {
+    const lang = page.id.split('/')[0];
+    return {
       params: { lang },
-      props: aboutPageInLang,
-    });
-  }
+      props: page.data,
+    };
+  });
+
   return res;
 }
 

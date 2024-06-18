@@ -88,3 +88,7 @@
 .dd *:first-child {
   margin-top: 0;
 }
+
+:is(.dark) .dark-logo {
+  fill: #fff !important;
+}

@@ -1,9 +1,17 @@
 ---
+import { Icon } from 'astro-icon/components';
 import { SITE } from 'astrowind:config';
+
+export interface Props {
+  isDark?: boolean;
+}
+
+const { isDark = false } = Astro.props;
 ---
 
 <span
   class="self-center ml-2 rtl:ml-0 rtl:mr-2 text-2xl md:text-xl font-bold text-gray-900 whitespace-nowrap dark:text-white"
 >
-  🚀 {SITE?.name}
+  <Icon name="logo" class:list={[{ dark: isDark }, 'inline w-6 h-6 text-white']} data-aw-toggle-color-scheme />
+  {SITE?.name}
 </span>

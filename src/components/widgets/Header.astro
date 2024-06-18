@@ -75,7 +75,7 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
   >
     <div class:list={[{ 'mr-auto rtl:mr-0 rtl:ml-auto': position === 'right' }, 'flex justify-between']}>
       <div class="flex items-center gap-2">
-        <a href={getHomePermalink()}><Logo /></a>
+        <a href={getHomePermalink()}><Logo isDark={isDark} /></a>
 
         <LanguageSelect client:load langMap={data} currentLang={currentLang} slugMapping={slugMapping} />
       </div>

@@ -22,3 +22,7 @@ pnpm-debug.log*
 pnpm-lock.yaml
 
 .astro
+.hashes
+.astro-cache
+
+src/content/auto-*/

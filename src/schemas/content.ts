@@ -1,130 +1,136 @@
 import { makeApi, Zodios, type ZodiosOptions } from '@zodios/core';
 import { z } from 'zod';
 
-const AWImage = z.object({ id: z.number().int(), src: z.string(), alt: z.string().nullish() }).passthrough();
+const AWImage = z
+  .object({ id: z.number().int(), src: z.string().nullable(), alt: z.string().nullable() })
+  .partial()
+  .passthrough();
 const VariantEnum = z.enum(['primary', 'secondary', 'tertiary', 'link']);
 const AWAction = z
   .object({
     id: z.number().int(),
-    variant: VariantEnum.optional(),
-    target: z.string().optional(),
-    text: z.string().nullish(),
-    href: z.string().optional(),
-    icon: z.string().optional(),
+    variant: VariantEnum,
+    target: z.string(),
+    text: z.string().nullable(),
+    href: z.string(),
+    icon: z.string(),
   })
+  .partial()
   .passthrough();
 const AWHero = z
   .object({
     id: z.number().int(),
-    image: AWImage,
-    actions: z.array(AWAction),
-    title: z.string().nullish(),
-    subtitle: z.string().nullish(),
-    tagline: z.string().nullish(),
-    htmlId: z.string().optional(),
-    content: z.string().nullish(),
+    image: AWImage.nullable(),
+    actions: z.array(AWAction).nullable(),
+    title: z.string().nullable(),
+    subtitle: z.string().nullable(),
+    tagline: z.string().nullable(),
+    htmlId: z.string(),
+    content: z.string().nullable(),
   })
+  .partial()
   .passthrough();
 const AWStatItem = z
-  .object({
-    id: z.number().int(),
-    title: z.string().nullish(),
-    amount: z.string().nullish(),
-    icon: z.string().optional(),
-  })
+  .object({ id: z.number().int(), title: z.string().nullable(), amount: z.string().nullable(), icon: z.string() })
+  .partial()
   .passthrough();
 const AWStat = z
   .object({
     id: z.number().int(),
-    stats: z.array(AWStatItem),
-    title: z.string().nullish(),
-    subtitle: z.string().nullish(),
-    tagline: z.string().nullish(),
-    htmlId: z.string().optional(),
+    stats: z.array(AWStatItem).nullable(),
+    title: z.string().nullable(),
+    subtitle: z.string().nullable(),
+    tagline: z.string().nullable(),
+    htmlId: z.string(),
   })
+  .partial()
   .passthrough();
 const AWItem = z
-  .object({
-    id: z.number().int(),
-    title: z.string().nullish(),
-    description: z.string().nullish(),
-    icon: z.string().optional(),
-  })
+  .object({ id: z.number().int(), title: z.string().nullable(), description: z.string().nullable(), icon: z.string() })
+  .partial()
   .passthrough();
 const AWFeature3 = z
   .object({
     id: z.number().int(),
-    items: z.array(AWItem),
-    title: z.string().nullish(),
-    subtitle: z.string().nullish(),
-    tagline: z.string().nullish(),
-    htmlId: z.string().optional(),
-    columns: z.number().int().gte(-2147483648).lte(2147483647).optional(),
-    defaultIcon: z.string().optional(),
-    isBeforeContent: z.boolean().optional(),
-    isAfterContent: z.boolean().optional(),
+    items: z.array(AWItem).nullable(),
+    title: z.string().nullable(),
+    subtitle: z.string().nullable(),
+    tagline: z.string().nullable(),
+    htmlId: z.string(),
+    columns: z.number().int().gte(-2147483648).lte(2147483647),
+    defaultIcon: z.string(),
+    isBeforeContent: z.boolean(),
+    isAfterContent: z.boolean(),
   })
+  .partial()
   .passthrough();
 const AWStep2 = z
   .object({
     id: z.number().int(),
-    callToAction: AWAction,
-    items: z.array(AWItem),
-    title: z.string().nullish(),
-    subtitle: z.string().nullish(),
-    tagline: z.string().nullish(),
-    htmlId: z.string().optional(),
-    isReversed: z.boolean().optional(),
+    callToAction: AWAction.nullable(),
+    items: z.array(AWItem).nullable(),
+    title: z.string().nullable(),
+    subtitle: z.string().nullable(),
+    tagline: z.string().nullable(),
+    htmlId: z.string(),
+    isReversed: z.boolean(),
   })
+  .partial()
   .passthrough();
 const AWFeature2 = z
   .object({
     id: z.number().int(),
-    items: z.array(AWItem),
-    title: z.string().nullish(),
-    subtitle: z.string().nullish(),
-    tagline: z.string().nullish(),
-    htmlId: z.string().optional(),
-    defaultIcon: z.string().optional(),
-    columns: z.number().int().gte(-2147483648).lte(2147483647).optional(),
+    items: z.array(AWItem).nullable(),
+    title: z.string().nullable(),
+    subtitle: z.string().nullable(),
+    tagline: z.string().nullable(),
+    htmlId: z.string(),
+    defaultIcon: z.string(),
+    columns: z.number().int().gte(-2147483648).lte(2147483647),
   })
+  .partial()
   .passthrough();
 const AWAboutPage = z
   .object({
     id: z.number().int(),
-    hero: AWHero,
-    stat: AWStat,
-    feature3s: z.array(AWFeature3),
-    step2s: z.array(AWStep2),
-    feature2s: z.array(AWFeature2),
-    title: z.string().nullish(),
+    hero: AWHero.nullable(),
+    stat: AWStat.nullable(),
+    feature3s: z.array(AWFeature3).nullable(),
+    step2s: z.array(AWStep2).nullable(),
+    feature2s: z.array(AWFeature2).nullable(),
+    hash: z.string().nullable(),
+    title: z.string().nullable(),
   })
+  .partial()
   .passthrough();
+const HashModel = z.object({ id: z.number().int(), hash: z.string() }).partial().passthrough();
 const AWHeroText = z
   .object({
     id: z.number().int(),
-    callToAction: AWAction,
-    callToAction2: AWAction,
-    title: z.string().nullish(),
-    subtitle: z.string().nullish(),
-    tagline: z.string().nullish(),
-    htmlId: z.string().optional(),
-    content: z.string().nullish(),
+    callToAction: AWAction.nullable(),
+    callToAction2: AWAction.nullable(),
+    title: z.string().nullable(),
+    subtitle: z.string().nullable(),
+    tagline: z.string().nullable(),
+    htmlId: z.string(),
+    content: z.string().nullable(),
   })
+  .partial()
   .passthrough();
 const AWTextArea = z
   .object({
     id: z.number().int(),
-    name: z.string().optional(),
-    label: z.string().nullish(),
-    rows: z.number().int().gte(-2147483648).lte(2147483647).optional(),
-    placeholder: z.string().nullish(),
+    name: z.string(),
+    label: z.string().nullable(),
+    rows: z.number().int().gte(-2147483648).lte(2147483647),
+    placeholder: z.string().nullable(),
   })
+  .partial()
   .passthrough();
-const AWDisclaimer = z.object({ id: z.number().int(), label: z.string().nullish() }).passthrough();
+const AWDisclaimer = z.object({ id: z.number().int(), label: z.string().nullable() }).partial().passthrough();
 const AWInput = z
   .object({
-    id: z.number().int(),
+    id: z.number().int().optional(),
     type: z.string().optional(),
     name: z.string(),
     label: z.string().nullish(),
@@ -135,77 +141,84 @@ const AWInput = z
 const AWContact = z
   .object({
     id: z.number().int(),
-    textarea: AWTextArea,
-    disclaimer: AWDisclaimer,
-    inputs: z.array(AWInput),
-    title: z.string().nullish(),
-    subtitle: z.string().nullish(),
-    tagline: z.string().nullish(),
-    htmlId: z.string().optional(),
-    button: z.string().nullish(),
-    description: z.string().nullish(),
-    submitUrl: z.string().nullish(),
+    textarea: AWTextArea.nullable(),
+    disclaimer: AWDisclaimer.nullable(),
+    inputs: z.array(AWInput).nullable(),
+    title: z.string().nullable(),
+    subtitle: z.string().nullable(),
+    tagline: z.string().nullable(),
+    htmlId: z.string(),
+    button: z.string().nullable(),
+    description: z.string().nullable(),
+    submitUrl: z.string().nullable(),
   })
+  .partial()
   .passthrough();
 const AWContactPage = z
   .object({
     id: z.number().int(),
-    heroText: AWHeroText,
-    contactUs: AWContact,
-    feature2: AWFeature2,
-    title: z.string().nullish(),
+    heroText: AWHeroText.nullable(),
+    contactUs: AWContact.nullable(),
+    feature2: AWFeature2.nullable(),
+    hash: z.string().nullable(),
+    title: z.string().nullable(),
   })
+  .partial()
   .passthrough();
 const AWFeature = z
   .object({
     id: z.number().int(),
-    items: z.array(AWItem),
-    title: z.string().nullish(),
-    subtitle: z.string().nullish(),
-    tagline: z.string().nullish(),
-    htmlId: z.string().optional(),
-    defaultIcon: z.string().optional(),
-    columns: z.number().int().gte(-2147483648).lte(2147483647).optional(),
+    items: z.array(AWItem).nullable(),
+    title: z.string().nullable(),
+    subtitle: z.string().nullable(),
+    tagline: z.string().nullable(),
+    htmlId: z.string(),
+    defaultIcon: z.string(),
+    columns: z.number().int().gte(-2147483648).lte(2147483647),
   })
+  .partial()
   .passthrough();
 const AWStep = z
   .object({
     id: z.number().int(),
-    image: AWImage,
-    items: z.array(AWItem),
-    title: z.string().nullish(),
-    subtitle: z.string().nullish(),
-    tagline: z.string().nullish(),
-    htmlId: z.string().optional(),
-    isReversed: z.boolean().optional(),
+    image: AWImage.nullable(),
+    items: z.array(AWItem).nullable(),
+    title: z.string().nullable(),
+    subtitle: z.string().nullable(),
+    tagline: z.string().nullable(),
+    htmlId: z.string(),
+    isReversed: z.boolean(),
   })
+  .partial()
   .passthrough();
 const AWFaq = z
   .object({
     id: z.number().int(),
-    items: z.array(AWItem),
-    title: z.string().nullish(),
-    subtitle: z.string().nullish(),
-    tagline: z.string().nullish(),
-    htmlId: z.string().optional(),
-    columns: z.number().int().gte(-2147483648).lte(2147483647).optional(),
+    items: z.array(AWItem).nullable(),
+    title: z.string().nullable(),
+    subtitle: z.string().nullable(),
+    tagline: z.string().nullable(),
+    htmlId: z.string(),
+    columns: z.number().int().gte(-2147483648).lte(2147483647),
   })
+  .partial()
   .passthrough();
 const AWCallToAction = z
   .object({
     id: z.number().int(),
-    actions: z.array(AWAction),
-    title: z.string().nullish(),
-    subtitle: z.string().nullish(),
-    tagline: z.string().nullish(),
+    actions: z.array(AWAction).nullable(),
+    title: z.string().nullable(),
+    subtitle: z.string().nullable(),
+    tagline: z.string().nullable(),
   })
+  .partial()
   .passthrough();
 const AWContent = z
   .object({
-    id: z.number().int(),
-    callToAction: AWAction,
-    image: AWImage,
-    items: z.array(AWItem),
+    id: z.number().int().optional(),
+    callToAction: AWAction.nullish(),
+    image: AWImage.nullish(),
+    items: z.array(AWItem).nullish(),
     title: z.string().nullish(),
     subtitle: z.string().nullish(),
     tagline: z.string().nullish(),
@@ -219,48 +232,57 @@ const AWContent = z
 const AWIndexPage = z
   .object({
     id: z.number().int(),
-    hero: AWHero,
-    feature: AWFeature,
-    feature2: AWFeature2,
-    step: AWStep,
-    faq: AWFaq,
-    stat: AWStat,
-    cta: AWCallToAction,
-    contents: z.array(AWContent),
-    title: z.string().nullish(),
+    hero: AWHero.nullable(),
+    feature: AWFeature.nullable(),
+    feature2: AWFeature2.nullable(),
+    step: AWStep.nullable(),
+    faq: AWFaq.nullable(),
+    stat: AWStat.nullable(),
+    cta: AWCallToAction.nullable(),
+    contents: z.array(AWContent).nullable(),
+    hash: z.string().nullable(),
+    title: z.string().nullable(),
   })
+  .partial()
   .passthrough();
 const AWPostPage = z
   .object({
     id: z.number().int(),
-    title: z.string().nullish(),
-    subtitle: z.string().nullish(),
-    tagText: z.string().nullish(),
-    categoryText: z.string().nullish(),
-    pageText: z.string().nullish(),
-    blogText: z.string().nullish(),
-    backToBlogText: z.string().nullish(),
-    postsByTagText: z.string().nullish(),
-    relatedPostsText: z.string().nullish(),
-    viewAllPostsText: z.string().nullish(),
-    prevText: z.string().nullish(),
-    nextText: z.string().nullish(),
+    hash: z.string().nullable(),
+    title: z.string().nullable(),
+    subtitle: z.string().nullable(),
+    tagText: z.string().nullable(),
+    categoryText: z.string().nullable(),
+    pageText: z.string().nullable(),
+    blogText: z.string().nullable(),
+    backToBlogText: z.string().nullable(),
+    postsByTagText: z.string().nullable(),
+    relatedPostsText: z.string().nullable(),
+    viewAllPostsText: z.string().nullable(),
+    prevText: z.string().nullable(),
+    nextText: z.string().nullable(),
   })
+  .partial()
   .passthrough();
 const AWCategory = z
   .object({
     id: z.number().int(),
-    title: z.string().nullish(),
+    hash: z.string().nullable(),
+    title: z.string().nullable(),
     slug: z
       .string()
       .regex(/^[-a-zA-Z0-9_]+$/)
-      .nullish(),
+      .nullable(),
   })
+  .partial()
   .passthrough();
-const RelatedPostImage = z.object({ id: z.number().int(), src: z.string(), alt: z.string().nullish() }).passthrough();
+const RelatedPostImage = z
+  .object({ id: z.number().int(), src: z.string().nullable(), alt: z.string().nullable() })
+  .partial()
+  .passthrough();
 const RelatedPost = z
   .object({
-    id: z.number().int(),
+    id: z.number().int().optional(),
     title: z.string().nullish(),
     excerpt: z.string().nullish(),
     author: z.string().nullish(),
@@ -271,80 +293,90 @@ const RelatedPost = z
     image: RelatedPostImage,
   })
   .passthrough();
-const AWPostImage = z.object({ id: z.number().int(), src: z.string(), alt: z.string().nullish() }).passthrough();
+const AWPostImage = z
+  .object({ id: z.number().int(), src: z.string().nullable(), alt: z.string().nullable() })
+  .partial()
+  .passthrough();
 const AWMetadataRobot = z
-  .object({ id: z.number().int(), index: z.boolean().optional(), follow: z.boolean().optional() })
+  .object({ id: z.number().int(), index: z.boolean(), follow: z.boolean() })
+  .partial()
   .passthrough();
 const AWMetadataImage = z
   .object({
     id: z.number().int(),
-    url: z.string().nullish(),
-    width: z.number().int().gte(-2147483648).lte(2147483647).optional(),
-    height: z.number().int().gte(-2147483648).lte(2147483647).optional(),
+    url: z.string().nullable(),
+    width: z.number().int().gte(-2147483648).lte(2147483647),
+    height: z.number().int().gte(-2147483648).lte(2147483647),
   })
+  .partial()
   .passthrough();
 const AWMetaDataOpenGraph = z
   .object({
     id: z.number().int(),
-    images: z.array(AWMetadataImage),
-    url: z.string().nullish(),
-    siteName: z.string().nullish(),
-    locale: z.string().nullish(),
-    type: z.string().optional(),
+    images: z.array(AWMetadataImage).nullable(),
+    url: z.string().nullable(),
+    siteName: z.string().nullable(),
+    locale: z.string().nullable(),
+    type: z.string(),
   })
+  .partial()
   .passthrough();
 const AWMetaDataTwitter = z
   .object({
     id: z.number().int(),
-    handle: z.string().nullish(),
-    site: z.string().nullish(),
-    cardType: z.string().nullish(),
+    handle: z.string().nullable(),
+    site: z.string().nullable(),
+    cardType: z.string().nullable(),
   })
+  .partial()
   .passthrough();
 const AWMetadata = z
   .object({
     id: z.number().int(),
-    robots: AWMetadataRobot,
-    openGraph: AWMetaDataOpenGraph,
-    twitter: AWMetaDataTwitter,
-    title: z.string().nullish(),
-    titleTemplate: z.string().nullish(),
-    description: z.string().nullish(),
-    canonical: z.string().nullish(),
-    ignoreTitleTemplate: z.boolean().optional(),
+    robots: AWMetadataRobot.nullable(),
+    openGraph: AWMetaDataOpenGraph.nullable(),
+    twitter: AWMetaDataTwitter.nullable(),
+    title: z.string().nullable(),
+    titleTemplate: z.string().nullable(),
+    description: z.string().nullable(),
+    canonical: z.string().nullable(),
+    ignoreTitleTemplate: z.boolean(),
   })
+  .partial()
   .passthrough();
 const AWPostTag = z
   .object({
     id: z.number().int(),
-    title: z.string().nullish(),
+    title: z.string().nullable(),
     slug: z
       .string()
       .regex(/^[-a-zA-Z0-9_]+$/)
-      .nullish(),
+      .nullable(),
   })
+  .partial()
   .passthrough();
 const AWPost = z
   .object({
     id: z.number().int(),
     relatedPosts: z.array(RelatedPost),
-    image: AWPostImage,
-    category: AWCategory,
-    metadata: AWMetadata,
-    tags: z.array(AWPostTag),
-    title: z.string().nullish(),
+    image: AWPostImage.nullable(),
+    category: AWCategory.nullable(),
+    metadata: AWMetadata.nullable(),
+    tags: z.array(AWPostTag).nullable(),
+    hash: z.string().nullable(),
+    title: z.string().nullable(),
     slug: z
       .string()
       .regex(/^[-a-zA-Z0-9_]+$/)
-      .nullish(),
-    excerpt: z.string().nullish(),
-    draft: z.boolean().optional(),
-    author: z.string().nullish(),
-    content: z.string().nullish(),
-    publishDate: z.string().datetime({ offset: true }).nullish(),
-    updatedDate: z.string().datetime({ offset: true }),
+      .nullable(),
+    excerpt: z.string().nullable(),
+    draft: z.boolean(),
+    author: z.string().nullable(),
+    content: z.string().nullable(),
+    publishDate: z.string().datetime({ offset: true }).nullable(),
     createdDate: z.string().datetime({ offset: true }),
   })
+  .partial()
   .passthrough();
 const PaginatedAWPostList = z
   .object({
@@ -357,82 +389,93 @@ const PaginatedAWPostList = z
 const AWPriceItem = z
   .object({
     id: z.number().int(),
-    callToAction: AWAction,
-    items: z.array(AWItem),
-    title: z.string().nullish(),
-    subtitle: z.string().nullish(),
-    price: z.string().nullish(),
-    period: z.string().nullish(),
-    hasRibbon: z.boolean().optional(),
-    ribbonTitle: z.string().nullish(),
+    callToAction: AWAction.nullable(),
+    items: z.array(AWItem).nullable(),
+    title: z.string().nullable(),
+    subtitle: z.string().nullable(),
+    price: z.string().nullable(),
+    period: z.string().nullable(),
+    hasRibbon: z.boolean(),
+    ribbonTitle: z.string().nullable(),
   })
+  .partial()
   .passthrough();
 const AWPricing = z
   .object({
     id: z.number().int(),
-    prices: z.array(AWPriceItem),
-    title: z.string().nullish(),
-    subtitle: z.string().nullish(),
-    tagline: z.string().nullish(),
-    htmlId: z.string().optional(),
+    prices: z.array(AWPriceItem).nullable(),
+    title: z.string().nullable(),
+    subtitle: z.string().nullable(),
+    tagline: z.string().nullable(),
+    htmlId: z.string(),
   })
+  .partial()
   .passthrough();
 const AWPricingPage = z
   .object({
     id: z.number().int(),
-    heroText: AWHeroText,
-    prices: AWPricing,
-    feature3: AWFeature3,
-    step: AWStep,
-    faq: AWFaq,
-    cta: AWCallToAction,
-    title: z.string().nullish(),
+    heroText: AWHeroText.nullable(),
+    prices: AWPricing.nullable(),
+    feature3: AWFeature3.nullable(),
+    step: AWStep.nullable(),
+    faq: AWFaq.nullable(),
+    cta: AWCallToAction.nullable(),
+    hash: z.string().nullable(),
+    title: z.string().nullable(),
   })
+  .partial()
   .passthrough();
 const AWHeaderLink = z
   .object({
     id: z.number().int(),
-    text: z.string().nullish(),
-    href: z.string().optional(),
-    ariaLabel: z.string().nullish(),
-    icon: z.string().optional(),
+    text: z.string().nullable(),
+    href: z.string(),
+    ariaLabel: z.string().nullable(),
+    icon: z.string(),
     links: z.array(z.number()),
   })
+  .partial()
   .passthrough();
 const AWHeader = z
-  .object({ id: z.number().int(), links: z.array(AWHeaderLink), actions: z.array(AWAction) })
+  .object({ id: z.number().int(), links: z.array(AWHeaderLink).nullable(), actions: z.array(AWAction).nullable() })
+  .partial()
   .passthrough();
 const AWFooterLinkItem = z
   .object({
     id: z.number().int(),
-    text: z.string().nullish(),
-    href: z.string().optional(),
-    ariaLabel: z.string().nullish(),
-    icon: z.string().optional(),
+    text: z.string().nullable(),
+    href: z.string(),
+    ariaLabel: z.string().nullable(),
+    icon: z.string(),
   })
+  .partial()
   .passthrough();
 const AWFooterLink = z
-  .object({ id: z.number().int(), links: z.array(AWFooterLinkItem), title: z.string().nullish() })
+  .object({ id: z.number().int(), links: z.array(AWFooterLinkItem).nullable(), title: z.string().nullable() })
+  .partial()
   .passthrough();
 const AWFooter = z
   .object({
     id: z.number().int(),
-    links: z.array(AWFooterLink),
-    secondaryLinks: z.array(AWFooterLink),
-    socialLinks: z.array(AWFooterLink),
-    footNote: z.string().nullish(),
+    links: z.array(AWFooterLink).nullable(),
+    secondaryLinks: z.array(AWFooterLink).nullable(),
+    socialLinks: z.array(AWFooterLink).nullable(),
+    footNote: z.string().nullable(),
   })
+  .partial()
   .passthrough();
 const AWSite = z
   .object({
     id: z.number().int(),
-    header: AWHeader,
-    footer: AWFooter,
-    defaultMetadata: AWMetadata,
-    announcement: z.string().nullish(),
-    philosophyText: z.string().nullish(),
-    philosophy: z.string().nullish(),
+    header: AWHeader.nullable(),
+    footer: AWFooter.nullable(),
+    defaultMetadata: AWMetadata.nullable(),
+    hash: z.string().nullable(),
+    announcement: z.string().nullable(),
+    philosophyText: z.string().nullable(),
+    philosophy: z.string().nullable(),
   })
+  .partial()
   .passthrough();
 
 export const contentSchemas = {
@@ -447,6 +490,7 @@ export const contentSchemas = {
   AWStep2,
   AWFeature2,
   AWAboutPage,
+  HashModel,
   AWHeroText,
   AWTextArea,
   AWDisclaimer,
@@ -500,6 +544,20 @@ const endpoints = makeApi([
   },
   {
     method: 'get',
+    path: '/api/aw/about/hash/',
+    alias: 'aboutHashRetrieve',
+    requestFormat: 'json',
+    parameters: [
+      {
+        name: 'accept-language',
+        type: 'Header',
+        schema: z.string().optional(),
+      },
+    ],
+    response: HashModel,
+  },
+  {
+    method: 'get',
     path: '/api/aw/contact/',
     alias: 'contactRetrieve',
     requestFormat: 'json',
@@ -511,6 +569,20 @@ const endpoints = makeApi([
       },
     ],
     response: AWContactPage,
+  },
+  {
+    method: 'get',
+    path: '/api/aw/contact/hash/',
+    alias: 'contactHashRetrieve',
+    requestFormat: 'json',
+    parameters: [
+      {
+        name: 'accept-language',
+        type: 'Header',
+        schema: z.string().optional(),
+      },
+    ],
+    response: HashModel,
   },
   {
     method: 'get',
@@ -528,6 +600,20 @@ const endpoints = makeApi([
   },
   {
     method: 'get',
+    path: '/api/aw/index/hash/',
+    alias: 'indexHashRetrieve',
+    requestFormat: 'json',
+    parameters: [
+      {
+        name: 'accept-language',
+        type: 'Header',
+        schema: z.string().optional(),
+      },
+    ],
+    response: HashModel,
+  },
+  {
+    method: 'get',
     path: '/api/aw/post-page/',
     alias: 'postPageRetrieve',
     requestFormat: 'json',
@@ -539,6 +625,20 @@ const endpoints = makeApi([
       },
     ],
     response: AWPostPage,
+  },
+  {
+    method: 'get',
+    path: '/api/aw/post-page/hash/',
+    alias: 'postPageHashRetrieve',
+    requestFormat: 'json',
+    parameters: [
+      {
+        name: 'accept-language',
+        type: 'Header',
+        schema: z.string().optional(),
+      },
+    ],
+    response: HashModel,
   },
   {
     method: 'get',
@@ -575,6 +675,20 @@ const endpoints = makeApi([
   },
   {
     method: 'get',
+    path: '/api/aw/posts/categories/hash/',
+    alias: 'postsCategoriesHashList',
+    requestFormat: 'json',
+    parameters: [
+      {
+        name: 'accept-language',
+        type: 'Header',
+        schema: z.string().optional(),
+      },
+    ],
+    response: z.array(HashModel),
+  },
+  {
+    method: 'get',
     path: '/api/aw/posts/posts/',
     alias: 'postsPostsList',
     requestFormat: 'json',
@@ -588,6 +702,11 @@ const endpoints = makeApi([
         name: 'category',
         type: 'Query',
         schema: z.string().optional(),
+      },
+      {
+        name: 'id',
+        type: 'Query',
+        schema: z.array(z.number()).optional(),
       },
       {
         name: 'page',
@@ -628,6 +747,35 @@ const endpoints = makeApi([
   },
   {
     method: 'get',
+    path: '/api/aw/posts/posts/hash/',
+    alias: 'postsPostsHashList',
+    requestFormat: 'json',
+    parameters: [
+      {
+        name: 'accept-language',
+        type: 'Header',
+        schema: z.string().optional(),
+      },
+      {
+        name: 'category',
+        type: 'Query',
+        schema: z.string().optional(),
+      },
+      {
+        name: 'id',
+        type: 'Query',
+        schema: z.array(z.number()).optional(),
+      },
+      {
+        name: 'tag',
+        type: 'Query',
+        schema: z.string().optional(),
+      },
+    ],
+    response: z.array(HashModel),
+  },
+  {
+    method: 'get',
     path: '/api/aw/posts/tags/',
     alias: 'postsTagsList',
     requestFormat: 'json',
@@ -661,6 +809,20 @@ const endpoints = makeApi([
   },
   {
     method: 'get',
+    path: '/api/aw/posts/tags/hash/',
+    alias: 'postsTagsHashList',
+    requestFormat: 'json',
+    parameters: [
+      {
+        name: 'accept-language',
+        type: 'Header',
+        schema: z.string().optional(),
+      },
+    ],
+    response: z.array(HashModel),
+  },
+  {
+    method: 'get',
     path: '/api/aw/pricing/',
     alias: 'pricingRetrieve',
     requestFormat: 'json',
@@ -675,6 +837,20 @@ const endpoints = makeApi([
   },
   {
     method: 'get',
+    path: '/api/aw/pricing/hash/',
+    alias: 'pricingHashRetrieve',
+    requestFormat: 'json',
+    parameters: [
+      {
+        name: 'accept-language',
+        type: 'Header',
+        schema: z.string().optional(),
+      },
+    ],
+    response: HashModel,
+  },
+  {
+    method: 'get',
     path: '/api/aw/site/',
     alias: 'siteRetrieve',
     requestFormat: 'json',
@@ -686,6 +862,20 @@ const endpoints = makeApi([
       },
     ],
     response: AWSite,
+  },
+  {
+    method: 'get',
+    path: '/api/aw/site/hash/',
+    alias: 'siteHashRetrieve',
+    requestFormat: 'json',
+    parameters: [
+      {
+        name: 'accept-language',
+        type: 'Header',
+        schema: z.string().optional(),
+      },
+    ],
+    response: HashModel,
   },
 ]);
 

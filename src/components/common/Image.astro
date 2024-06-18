@@ -49,7 +49,7 @@ if (_image !== null && typeof _image === 'object') {
 }
 
 // eslint-disable-next-line no-unused-vars
-const { id, ...rest } = image!.attributes;
+const { id, ...rest } = image?.attributes || {};
 ---
 
 {!image ? <Fragment /> : <img {...rest} src={image.src} />}

@@ -1,12 +1,12 @@
+import { getCollection } from 'astro:content';
 import memoize from 'lodash.memoize';
-import { cmsApiClient } from '~/services/cms.service';
 import { type AWSite } from '~/types/content';
 
-const fetchSiteData = async (lang) => {
-  const siteDataInLang = await cmsApiClient.siteRetrieve({
-    headers: { 'accept-language': lang },
-  });
-  return siteDataInLang;
+import { DEFAULT_LANG } from './languages';
+
+const fetchSiteData = async (lang = DEFAULT_LANG) => {
+  const indexPages = await getCollection('auto-site', (item) => item.id.includes(lang));
+  return indexPages[0].data;
 };
 
 export const getSiteData: (lang?: string) => Promise<AWSite> = memoize(fetchSiteData);

@@ -1,70 +1,53 @@
-import { z, defineCollection } from 'astro:content';
+import { defineCollection } from 'astro:content';
 import { contentSchemas } from '~/schemas/content';
 
-const metadataDefinition = () =>
-  z
-    .object({
-      title: z.string().optional(),
-      ignoreTitleTemplate: z.boolean().optional(),
-
-      canonical: z.string().url().optional(),
-
-      robots: z
-        .object({
-          index: z.boolean().optional(),
-          follow: z.boolean().optional(),
-        })
-        .optional(),
-
-      description: z.string().optional(),
-
-      openGraph: z
-        .object({
-          url: z.string().optional(),
-          siteName: z.string().optional(),
-          images: z
-            .array(
-              z.object({
-                url: z.string(),
-                width: z.number().optional(),
-                height: z.number().optional(),
-              })
-            )
-            .optional(),
-          locale: z.string().optional(),
-          type: z.string().optional(),
-        })
-        .optional(),
-
-      twitter: z
-        .object({
-          handle: z.string().optional(),
-          site: z.string().optional(),
-          cardType: z.string().optional(),
-        })
-        .optional(),
-    })
-    .optional();
-
 const postCollection = defineCollection({
-  schema: z.object({
-    publishDate: z.date().optional(),
-    updateDate: z.date().optional(),
-    draft: z.boolean().optional(),
+  type: 'data',
+  schema: contentSchemas.AWPost,
+});
 
-    title: z.string(),
-    excerpt: z.string().optional(),
-    image: z.string().optional(),
+const indexPageCollection = defineCollection({
+  type: 'data',
+  schema: contentSchemas.AWIndexPage,
+});
 
-    category: z.string().optional(),
-    tags: z.array(z.string()).optional(),
-    author: z.string().optional(),
+const aboutPageCollection = defineCollection({
+  type: 'data',
+  schema: contentSchemas.AWAboutPage,
+});
 
-    metadata: metadataDefinition(),
-  }),
+const contactPageCollection = defineCollection({
+  type: 'data',
+  schema: contentSchemas.AWContactPage,
+});
+
+const pricingPageCollection = defineCollection({
+  type: 'data',
+  schema: contentSchemas.AWPricingPage,
+});
+
+const postPageCollection = defineCollection({
+  type: 'data',
+  schema: contentSchemas.AWPostPage,
+});
+
+const categoryCollection = defineCollection({
+  type: 'data',
+  schema: contentSchemas.AWCategory,
+});
+
+const tagCollection = defineCollection({
+  type: 'data',
+  schema: contentSchemas.AWPostTag,
 });
 
 export const collections = {
-  post: postCollection,
-  indexPage: defineCollection({ schema: contentSchemas.AWIndexPage }),
+  'auto-posts': postCollection,
+  'auto-categories': categoryCollection,
+  'auto-tags': tagCollection,
+  'auto-indexPage': indexPageCollection,
+  'auto-contactPage': contactPageCollection,
+  'auto-pricingPage': pricingPageCollection,
+  'auto-postPage': postPageCollection,
+  'auto-aboutPage': aboutPageCollection,
 };

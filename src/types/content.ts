@@ -23,6 +23,8 @@ export type AWFeature2 = z.infer<typeof contentSchemas.AWFeature2>;
 
 export type AWAboutPage = z.infer<typeof contentSchemas.AWAboutPage>;
 
+export type HashModel = z.infer<typeof contentSchemas.HashModel>;
+
 export type AWHeroText = z.infer<typeof contentSchemas.AWHeroText>;
 
 export type AWTextArea = z.infer<typeof contentSchemas.AWTextArea>;

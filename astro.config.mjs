@@ -37,7 +37,12 @@ export default defineConfig({
     tailwind({
       applyBaseStyles: false,
     }),
-    sitemap(),
+    sitemap({
+      i18n: {
+        defaultLocale: 'en',
+        locales: Object.fromEntries(LANGUAGES.map((e) => [e, e])),
+      },
+    }),
     mdx(),
     icon({
       include: {
@@ -53,6 +58,7 @@ export default defineConfig({
           'business-contact',
           'database',
         ],
+        'src/icons': ['*'],
       },
     }),
     ...whenExternalScripts(() =>
@@ -92,4 +98,5 @@ export default defineConfig({
       },
     },
   },
+  cacheDir: './.astro-cache',
 });

@@ -3,29 +3,34 @@ import Layout from '~/layouts/Layout.astro';
 import Header from '~/components/widgets/Header.astro';
 import Footer from '~/components/widgets/Footer.astro';
 import Announcement from '~/components/widgets/Announcement.astro';
-import { getLangFromUrl } from '~/utils/i18n';
 
 import type { MetaData } from '~/types';
 import { getSiteData } from '~/utils/site';
+import { buildLanguageAlternates } from '~/utils/languages';
+import { getCanonical } from '~/utils/permalinks';
 
 export interface Props {
   metadata?: MetaData;
   slugMapping?: object;
 }
 
-const { metadata, slugMapping } = Astro.props;
+const { metadata = {}, slugMapping } = Astro.props;
 
-const lang = getLangFromUrl(Astro.url);
+const { lang } = Astro.params;
 const siteData = await getSiteData(lang);
 const { header, footer } = siteData;
+
+const url = String(getCanonical(String(Astro.url.pathname)));
+
+metadata.languageAlternates = buildLanguageAlternates(url, lang, slugMapping);
 ---
 
-<Layout metadata={metadata} slugMapping={slugMapping}>
+<Layout metadata={metadata}>
   <slot name="announcement">
     <Announcement />
   </slot>
   <slot name="header">
-    <Header {...header} isSticky showRssFeed showToggleTheme slugMapping={slugMapping} />
+    <Header {...header} isSticky showToggleTheme slugMapping={slugMapping} />
   </slot>
   <main>
     <slot />

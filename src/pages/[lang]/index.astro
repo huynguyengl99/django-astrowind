@@ -13,18 +13,18 @@ import { LANGUAGES } from '~/utils/languages';
 import Content from '~/components/widgets/Content.astro';
 import Stats from '~/components/widgets/Stats.astro';
 import Features2 from '~/components/widgets/Features2.astro';
+import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
-  const res: any[] = [];
-  for (let lang of LANGUAGES) {
-    const indexPageInLang = await cmsApiClient.indexRetrieve({
-      headers: { 'accept-language': lang },
-    });
-    res.push({
+  const indexPages = await getCollection('auto-indexPage');
+  const res = indexPages.map((page) => {
+    const lang = page.id.split('/')[0];
+    return {
       params: { lang },
-      props: indexPageInLang,
-    });
-  }
+      props: page.data,
+    };
+  });
+
   return res;
 }
 

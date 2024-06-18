@@ -13,7 +13,6 @@ import { getSiteData } from '~/utils/site';
 
 export interface Props extends MetaData {
   dontUseTitleTemplate?: boolean;
-  slugMapping?: object;
 }
 
 const { lang } = Astro.params;
@@ -30,7 +29,7 @@ const {
   description,
   openGraph = {},
   twitter = {},
-  slugMapping,
+  languageAlternates,
 } = Astro.props;
 
 const seoProps: AstroSeoProps = merge(
@@ -70,11 +69,9 @@ const seoProps: AstroSeoProps = merge(
     description: description,
     openGraph: { url: canonical, ...openGraph },
     twitter: twitter,
+    languageAlternates,
   }
 );
 ---
 
-<AstroSeo
-  {...{ ...seoProps, openGraph: await adaptOpenGraphImages(seoProps?.openGraph, Astro.site) }}
-  slugMapping={slugMapping}
-/>
+<AstroSeo {...{ ...seoProps, openGraph: await adaptOpenGraphImages(seoProps?.openGraph, Astro.site) }} />

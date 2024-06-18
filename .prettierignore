@@ -3,3 +3,4 @@ node_modules
 .github
 .changeset
 *.hbs
+src/content/auto-*

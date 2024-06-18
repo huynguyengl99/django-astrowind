@@ -6,82 +6,26 @@ import BlogList from '~/components/blog/List.astro';
 import Headline from '~/components/blog/Headline.astro';
 import Pagination from '~/components/blog/Pagination.astro';
 
-import { blogListRobots, getPostPage } from '~/utils/blog';
-import { cmsApiClient } from '~/services/cms.service';
-import { LANGUAGES } from '~/utils/languages';
-import { BLOG_BASE, getPermalink } from '~/utils/permalinks';
+import { blogListRobots, getPaginatedPosts } from '~/utils/blog';
+
+import type { PaginateFunction } from 'astro';
+import { getPostPage } from '~/utils/blog';
 
 export const prerender = true;
 
-export async function getStaticPaths() {
-  const size = 10;
-
-  const res: any[] = [];
-  for (let lang of LANGUAGES) {
-    let page = 1;
-
-    let postsRes = await cmsApiClient.postsPostsList({
-      headers: { 'accept-language': lang },
-      queries: {
-        page,
-        size,
-      },
-    });
-    const count = postsRes.count;
-    const maxPage = Math.ceil(count / size);
-    res.push(
-      {
-        params: { lang, page },
-        props: {
-          data: postsRes.results,
-          next: postsRes.next ? getPermalink(String(page + 1), BLOG_BASE, lang) : '',
-          previous: postsRes.previous ? getPermalink(String(page - 1), BLOG_BASE, lang) : '',
-        },
-      },
-      {
-        params: { lang, page: undefined },
-        props: {
-          data: postsRes.results,
-          next: postsRes.next ? getPermalink(String(page + 1), BLOG_BASE, lang) : '',
-          previous: postsRes.previous ? getPermalink(String(page - 1), BLOG_BASE, lang) : '',
-        },
-      }
-    );
-    while (page < maxPage) {
-      page += 1;
-      postsRes = await cmsApiClient.postsPostsList({
-        headers: { 'accept-language': lang },
-        queries: {
-          page,
-          size,
-        },
-      });
-
-      res.push({
-        params: { lang, page },
-        props: {
-          data: postsRes.results,
-          next: postsRes.next ? getPermalink(String(page + 1), BLOG_BASE, lang) : '',
-          previous: postsRes.previous ? getPermalink(String(page - 1), BLOG_BASE, lang) : '',
-        },
-      });
-    }
-  }
-  return res;
+export async function getStaticPaths({ paginate }: { paginate: PaginateFunction }) {
+  return await getPaginatedPosts({ paginate });
 }
 
-type Props = {
-  next?: string;
-  previous?: string;
-  data: Array<AWPost>;
-};
-
-const { page, lang } = Astro.params;
-const currentPage = page || 1;
-
-const { data, previous, next } = Astro.props;
+const { lang } = Astro.params;
+const { page } = Astro.props;
 
 const postPageData = await getPostPage(lang);
+const {
+  data,
+  currentPage,
+  url: { prev, next },
+} = page;
 
 // const allCategories = await findCategories();
 // const allTags = await findTags();
@@ -104,7 +48,7 @@ const metadata = {
       {postPageData.title}
     </Headline>
     <BlogList posts={data} />
-    <Pagination prevUrl={previous} nextUrl={next} />
+    <Pagination prevUrl={prev} nextUrl={next} />
     <!--
       <PostTags tags={allCategories} class="mb-2" title="Search by Categories:" isCategory />
       <PostTags tags={allTags}  title="Search by Tags:" />
