@@ -13,6 +13,7 @@ Everything of Astrowind plus:
 <summary>Table of Contents</summary>
 
 - [🚀 Django AstroWind](#-django-astrowind)
+  - [Demo](#demo)
   - [Getting Started](#getting-started)
     - [Commands](#commands)
     - [Configuration](#configuration)
@@ -29,6 +30,10 @@ Everything of Astrowind plus:
 </details>
 
 <br>
+
+## Demo
+
+https://django-astrowind.netlify.app/
 
 ## Getting Started
 
