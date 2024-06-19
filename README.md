@@ -191,6 +191,7 @@ export const LANGUAGE_MAP = {
 
 ```text
 VITE_CMS_API_KEY=your-production-key
+VITE_CMS_API_URL=https://your-production.url
 ```
 
 -You can create an optimized production build with:
@@ -203,15 +204,17 @@ VITE_APP_ENV=production npm run build
   `dist` folder, which you can deploy the folder to any hosting service you
   prefer.
 
-> **_NOTE:_** Deployment to Netlify and Vercel has not yet been updated to include the ability
-to fetch content and cache it. If you have knowledge about this, please feel free to contribute. Thank you!
-
+> **_NOTE:_** Deployment to Vercel has not yet been updated to include the ability
+> to fetch content and cache it. If you have knowledge about this, please feel free to contribute. Thank you!
 
 #### Deploy to Netlify
 
 Clone this repository on own GitHub account and deploy to Netlify:
 
 [![Netlify Deploy button](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/onwidget/astrowind)
+
+When deploying to Netlify, don't forget to add `VITE_CMS_API_KEY` and `VITE_CMS_API_URL` to your environment
+variables on the dashboard or use the CLI.
 
 #### Deploy to Vercel
 

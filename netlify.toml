@@ -1,6 +1,8 @@
 [build]
   publish = "dist"
-  command = "VITE_APP_ENV=production npm run build"
+  command = "npm run sync:content && npm run build"
+[build.environment]
+  VITE_APP_ENV = "production"
 [build.processing.html]
   pretty_urls = false
 [[headers]]
