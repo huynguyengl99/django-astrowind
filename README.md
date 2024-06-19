@@ -216,6 +216,9 @@ Clone this repository on own GitHub account and deploy to Netlify:
 When deploying to Netlify, don't forget to add `VITE_CMS_API_KEY` and `VITE_CMS_API_URL` to your environment
 variables on the dashboard or use the CLI.
 
+If you update the auto schema section in [src/content/config.ts](src/content/config.ts), don't forget to add or
+update it in the [cache-django-astrowind Netlify plugin](plugins/cache-django-astrowind/index.js).
+
 #### Deploy to Vercel
 
 Clone this repository on own GitHub account and deploy to Vercel:
