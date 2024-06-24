@@ -98,6 +98,14 @@ const fetchByLang = async (fetchFn, { pagination = false, lang, queries = {} }) 
   return results;
 };
 
+const removeDeletedContentLangs = (contentAutoFolder: string, obsoleteLangs: string[]) => {
+  obsoleteLangs.forEach((lang) => {
+    const contentLangDir = path.join(contentAutoFolder, lang);
+    fs.rmSync(contentLangDir, { recursive: true, force: true });
+    debug && console.log(`\nRemoving obsolete folder: ${contentLangDir}`);
+  });
+};
+
 const removeDeletedItems = (contentAutoFolder: string, ids: number[]) => {
   LANGUAGES.forEach((lang) => {
     const contentLangDir = path.join(contentAutoFolder, lang);
@@ -126,14 +134,22 @@ const processCollection = async (collection: string) => {
     oldHashes = JSON.parse(fs.readFileSync(hashFilePath, 'utf-8')) as HashData[];
   }
 
-  if (_.isEqual(hashes, oldHashes)) return;
-
   const addedIds = _.differenceWith(hashes, oldHashes || [], _.isEqual).map((item) => item.id);
   const removedIds = _.differenceWith(oldHashes || [], hashes, _.isEqual).map((item) => item.id);
 
   if (!_.isEmpty(removedIds)) {
     removeDeletedItems(contentAutoFolder, removedIds);
   }
+
+  const allCurLangs = fs
+    .readdirSync(contentAutoFolder, { withFileTypes: true })
+    .filter((dirent) => dirent.isDirectory())
+    .map((dirent) => dirent.name);
+
+  const obsoleteLangs = _.difference(allCurLangs, LANGUAGES);
+  removeDeletedContentLangs(contentAutoFolder, obsoleteLangs);
+
+  if (_.isEqual(hashes, oldHashes)) return;
 
   writeJsonFile(hashFilePath, hashes);
 
